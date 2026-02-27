@@ -1,0 +1,107 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+    <div>
+      <div class="flex items-center space-x-2">
+        <%= link_to field_path(@field), class: "text-gray-500 hover:text-gray-700" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        <% end %>
+        <h1 class="text-2xl font-bold text-gray-900">Field Visit - <%= @field_visit.created_at.strftime("%B %d, %Y") %></h1>
+      </div>
+      <p class="text-gray-500 mt-1"><%= @field.name %></p>
+    </div>
+  </div>
+  <!-- Visit Info Card -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <p class="text-sm text-gray-500">Created</p>
+        <p class="font-medium text-gray-900"><%= @field_visit.created_at.strftime("%B %d, %Y") %></p>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500">Audio Messages</p>
+        <p class="font-medium text-gray-900"><%= @audio_messages.count %></p>
+      </div>
+    </div>
+  </div>
+  <!-- Audio Recording Section -->
+  <div class="bg-white rounded-lg shadow p-6" data-controller="audio-recorder" data-audio-recorder-field-visit-id-value="<%= @field_visit.id %>" data-audio-recorder-upload-url-value="<%= field_field_visit_audio_messages_path(@field, @field_visit) %>">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Record Audio Message</h2>
+    <div class="flex flex-col items-center space-y-4">
+      <!-- Recording Timer -->
+      <div class="text-4xl font-mono text-gray-700" data-audio-recorder-target="timer">00:00</div>
+      <!-- Waveform Visualization -->
+      <div class="w-full h-16 bg-gray-100 rounded-lg overflow-hidden" data-audio-recorder-target="visualizer">
+        <canvas class="w-full h-full"></canvas>
+      </div>
+      <!-- Recording Controls -->
+      <div class="flex space-x-4">
+        <button type="button" 
+                data-audio-recorder-target="recordButton"
+                data-action="click->audio-recorder#toggleRecording"
+          class="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition shadow-lg">
+          <svg class="w-8 h-8" data-audio-recorder-target="recordIcon" fill="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="6"/>
+          </svg>
+        </button>
+      </div>
+      <p class="text-sm text-gray-500" data-audio-recorder-target="status">Tap to start recording</p>
+    </div>
+  </div>
+  <!-- Audio Messages List -->
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold text-gray-900">Audio Messages</h2>
+    </div>
+    <div id="audio-messages-list" class="divide-y divide-gray-200">
+      <% if @audio_messages.any? %>
+        <% @audio_messages.each do |audio_message| %>
+          <%= render partial: "audio_messages/audio_message", locals: { audio_message: audio_message } %>
+        <% end %>
+      <% else %>
+        <div class="px-6 py-12 text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No audio messages yet</h3>
+          <p class="mt-1 text-sm text-gray-500">Start recording to capture your field observations.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <!-- Report Section -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold text-gray-900">Field Visit Report</h2>
+      <% if @audio_messages.any? %>
+        <%= button_to "Generate Report", generate_report_field_field_visit_path(@field, @field_visit), 
+            method: :post,
+            class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition" %>
+      <% end %>
+    </div>
+    <% if @field_visit.summary.present? %>
+      <div class="prose prose-sm max-w-none prose-headings:text-gray-900 prose-h1:text-xl prose-h2:text-lg prose-h2:border-b prose-h2:pb-2 prose-h2:mb-3 prose-strong:text-gray-800 prose-ul:my-2 prose-li:my-0">
+        <div class="text-xs text-gray-500 mb-4">
+          Generated: <%= @field_visit.report_generated_at&.strftime("%B %d, %Y at %H:%M") %>
+        </div>
+        <%= markdown(@field_visit.summary) %>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No report generated yet</h3>
+        <p class="mt-1 text-sm text-gray-500">Record audio messages and click "Generate Report" to create an AI-powered summary.</p>
+      </div>
+    <% end %>
+  </div>
+  <!-- Actions -->
+  <div class="flex justify-end">
+    <%= button_to "Delete Visit", field_field_visit_path(@field, @field_visit), method: :delete, 
+        data: { turbo_confirm: "Are you sure you want to delete this field visit and all its recordings?" },
+        class: "text-red-600 hover:text-red-700 text-sm" %>
+  </div>
+</div>

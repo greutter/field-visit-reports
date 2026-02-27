@@ -1,0 +1,3 @@
+<%= turbo_stream.append "audio-messages-list" do %>
+  <%= render partial: "audio_messages/audio_message", locals: { audio_message: @audio_message } %>
+<% end %>

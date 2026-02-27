@@ -1,0 +1,29 @@
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center space-x-2 mb-6">
+      <%= link_to field_path(@field), class: "text-gray-500 hover:text-gray-700" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      <% end %>
+      <h1 class="text-2xl font-bold text-gray-900">New Field Visit</h1>
+    </div>
+    <p class="text-gray-600 mb-6">Create a new visit for: <strong><%= @field.name %></strong></p>
+    <%= form_with model: [@field, @field_visit], class: "space-y-6" do |form| %>
+      <% if @field_visit.errors.any? %>
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+          <p class="font-bold">Please fix the following errors:</p>
+          <ul class="list-disc list-inside">
+            <% @field_visit.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Cancel", field_path(@field), class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition" %>
+        <%= form.submit "Create Visit", class: "px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

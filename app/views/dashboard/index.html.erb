@@ -1,0 +1,108 @@
+<div class="space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+    <%= link_to "New Field Visit", fields_path, class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition" %>
+  </div>
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-100 rounded-full">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Total Fields</p>
+          <p class="text-2xl font-semibold text-gray-900"><%= Current.user.fields.count %></p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-100 rounded-full">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Total Visits</p>
+          <p class="text-2xl font-semibold text-gray-900"><%= Current.user.field_visits.count %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Recent Field Visits -->
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold text-gray-900">Recent Field Visits</h2>
+    </div>
+    <div class="divide-y divide-gray-200">
+      <% if @recent_visits.any? %>
+        <% @recent_visits.each do |visit| %>
+          <%= link_to field_field_visit_path(visit.field, visit), class: "block px-6 py-4 hover:bg-gray-50 transition" do %>
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="font-medium text-gray-900"><%= visit.field.name %></p>
+                <p class="text-sm text-gray-500"><%= visit.created_at.strftime("%B %d, %Y") %> - <%= visit.audio_messages.count %> audio messages</p>
+              </div>
+              <div class="flex items-center">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% else %>
+        <div class="px-6 py-12 text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No field visits yet</h3>
+          <p class="mt-1 text-sm text-gray-500">Get started by creating a new field visit.</p>
+          <div class="mt-6">
+            <%= link_to "Add a Field", new_field_path, class: "inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <!-- Fields List -->
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-gray-900">Your Fields</h2>
+      <%= link_to "View All", fields_path, class: "text-sm text-green-600 hover:text-green-700" %>
+    </div>
+    <div class="divide-y divide-gray-200">
+      <% if @fields.any? %>
+        <% @fields.each do |field| %>
+          <%= link_to field_path(field), class: "block px-6 py-4 hover:bg-gray-50 transition" do %>
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="font-medium text-gray-900"><%= field.name %></p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-sm text-gray-500"><%= field.field_visits.count %> visits</span>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% else %>
+        <div class="px-6 py-12 text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No fields yet</h3>
+          <p class="mt-1 text-sm text-gray-500">Get started by adding your first field.</p>
+          <div class="mt-6">
+            <%= link_to "Add a Field", new_field_path, class: "inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

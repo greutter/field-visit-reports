@@ -1,0 +1,31 @@
+<div class="space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-900">Fields</h1>
+    <%= link_to "Add Field", new_field_path, class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition" %>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% @fields.each do |field| %>
+      <%= link_to field_path(field), class: "block bg-white rounded-lg shadow hover:shadow-md transition" do %>
+        <div class="p-6">
+          <h3 class="text-lg font-semibold text-gray-900"><%= field.name %></h3>
+          <div class="mt-4 flex justify-between items-center text-sm">
+            <span class="text-gray-500"><%= field.field_visits.count %> visits</span>
+            <span class="text-green-600">View details &rarr;</span>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <% if @fields.empty? %>
+    <div class="bg-white rounded-lg shadow px-6 py-12 text-center">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">No fields yet</h3>
+      <p class="mt-1 text-sm text-gray-500">Get started by adding your first field.</p>
+      <div class="mt-6">
+        <%= link_to "Add a Field", new_field_path, class: "inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition" %>
+      </div>
+    </div>
+  <% end %>
+</div>
