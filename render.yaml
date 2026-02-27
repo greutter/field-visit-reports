@@ -1,0 +1,29 @@
+databases:
+  - name: field-visit-reports-db
+    plan: free
+    databaseName: field_visit_reports
+    user: field_visit_reports
+
+services:
+  - type: web
+    name: field-visit-reports
+    runtime: ruby
+    plan: free
+    buildCommand: |
+      bundle install
+      bundle exec rails assets:precompile
+      bundle exec rails db:migrate
+    startCommand: bundle exec puma -C config/puma.rb
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: field-visit-reports-db
+          property: connectionString
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SECRET_KEY_BASE
+        generateValue: true
