@@ -68,7 +68,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   # Pin minitest to compatible version
-  gem "minitest", "~> 5.25"
+  gem "minitest", "~> 6.0"
 end
 
 gem "dotenv-rails", "~> 3.2", :groups => [:development, :test]
